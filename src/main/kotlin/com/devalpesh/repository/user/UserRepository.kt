@@ -1,8 +1,8 @@
-package com.devalpesh.controller.user
+package com.devalpesh.repository.user
 
 import com.devalpesh.data.models.User
 
-interface UserController {
+interface UserRepository {
 
     suspend fun createUser(user: User)
 

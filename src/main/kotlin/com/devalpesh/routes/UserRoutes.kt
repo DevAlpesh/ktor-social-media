@@ -1,6 +1,6 @@
 package com.devalpesh.routes
 
-import com.devalpesh.controller.user.UserController
+import com.devalpesh.repository.user.UserRepository
 import com.devalpesh.data.models.User
 import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.response.ApiResponseMessages.FIELDS_BLANK
@@ -11,11 +11,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.inject
 
-fun Route.userRoutes() {
-
-    val userController: UserController by inject()
+fun Route.createUserRoute(userRepository: UserRepository) {
 
     route("/api/user/create") {
         post {
@@ -24,7 +21,7 @@ fun Route.userRoutes() {
                 return@post
             }
 
-            val userExist = userController.getUserByEmail(request.email) != null
+            val userExist = userRepository.getUserByEmail(request.email) != null
             if (userExist) {
                 call.respond(
                     BasicApiResponse(
@@ -43,7 +40,7 @@ fun Route.userRoutes() {
                 )
                 return@post
             }
-            userController.createUser(
+            userRepository.createUser(
                 User(
                     email = request.email,
                     username = request.username,

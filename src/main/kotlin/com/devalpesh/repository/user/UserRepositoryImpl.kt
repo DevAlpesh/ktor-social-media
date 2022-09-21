@@ -1,12 +1,12 @@
-package com.devalpesh.controller.user
+package com.devalpesh.repository.user
 
 import com.devalpesh.data.models.User
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 
-class UserControllerImpl(
+class UserRepositoryImpl(
     db: CoroutineDatabase
-) : UserController {
+) : UserRepository {
 
     private val users = db.getCollection<User>()
 

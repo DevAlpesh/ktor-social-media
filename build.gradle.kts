@@ -19,6 +19,12 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -36,24 +42,28 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     // kMongo
     implementation("org.litote.kmongo:kmongo:$kmong_version")
 
     implementation("org.litote.kmongo:kmongo-coroutine:$kmong_version")
 
-    // Koin Core features
+    // Koin core features
     implementation("io.insert-koin:koin-core:$koin_version")
-
-    // Koin Test features
-    testImplementation("io.insert-koin:koin-test:$koin_version")
-
-    // Koin for Ktor
     implementation("io.insert-koin:koin-ktor:$koin_version")
-    // SLF4J Logger
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
+
+    // Test dependencies
+    // Gson
+    testImplementation("com.google.code.gson:gson:2.9.1")
+    // Koin
+    testImplementation("io.insert-koin:koin-test:$koin_version")
+    // Ktor Test
+    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    // Kotlin Test
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    // Truth
+    testImplementation("com.google.truth:truth:1.1.3")
 
 }

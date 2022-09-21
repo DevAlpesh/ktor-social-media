@@ -1,7 +1,7 @@
 package com.devalpesh.di
 
-import com.devalpesh.repository.user.UserRepository
-import com.devalpesh.repository.user.UserRepositoryImpl
+import com.devalpesh.data.repository.user.UserRepository
+import com.devalpesh.data.repository.user.UserRepositoryImpl
 import com.devalpesh.util.Constant
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine

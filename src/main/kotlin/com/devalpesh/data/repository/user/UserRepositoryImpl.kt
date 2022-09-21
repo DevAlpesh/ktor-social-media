@@ -1,4 +1,4 @@
-package com.devalpesh.repository.user
+package com.devalpesh.data.repository.user
 
 import com.devalpesh.data.models.User
 import org.litote.kmongo.coroutine.CoroutineDatabase
@@ -20,5 +20,13 @@ class UserRepositoryImpl(
 
     override suspend fun getUserByEmail(email: String): User? {
         return users.findOne(User::email eq email)
+    }
+
+    override suspend fun doesPasswordForUserMatch(
+        email: String,
+        enteredPassword: String
+    ): Boolean {
+        val user = getUserByEmail(email)
+        return user?.password == enteredPassword
     }
 }

@@ -1,5 +1,7 @@
 package com.devalpesh.di
 
+import com.devalpesh.data.repository.follow.FollowRepository
+import com.devalpesh.data.repository.follow.FollowRepositoryImpl
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.repository.user.UserRepositoryImpl
 import com.devalpesh.util.Constant
@@ -15,5 +17,9 @@ val mainModule = module {
 
     single<UserRepository> {
         UserRepositoryImpl(get())
+    }
+
+    single<FollowRepository> {
+        FollowRepositoryImpl(get())
     }
 }

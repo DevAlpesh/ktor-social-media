@@ -4,6 +4,7 @@ import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.request.FollowUpdateRequest
 import com.devalpesh.data.response.ApiResponseMessages.USER_NOT_FOUND
 import com.devalpesh.data.response.BasicApiResponse
+import com.devalpesh.service.FollowService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -11,7 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.followRoute(
-    followRepository: FollowRepository
+    followService: FollowService
 ) {
     post("/api/following/follow") {
         val request = call.receiveNullable<FollowUpdateRequest>() ?: kotlin.run {
@@ -19,12 +20,7 @@ fun Route.followRoute(
             return@post
         }
 
-        val didUserExists = followRepository.followUserIfExists(
-            request.followingUserId,
-            request.followedUserId
-        )
-
-        if (didUserExists) {
+        if (followService.followUserIfExists(request)) {
             call.respond(
                 HttpStatusCode.OK,
                 BasicApiResponse(success = true)
@@ -41,7 +37,7 @@ fun Route.followRoute(
     }
 }
 
-fun Route.unfollowUser(followRepository: FollowRepository) {
+fun Route.unfollowUser(followService: FollowService) {
     delete("/api/following/unfollow") {
 
         val request = call.receiveNullable<FollowUpdateRequest>() ?: kotlin.run {
@@ -49,12 +45,8 @@ fun Route.unfollowUser(followRepository: FollowRepository) {
             return@delete
         }
 
-        val didUserExists = followRepository.unfollowedUserIfExists(
-            request.followingUserId,
-            request.followedUserId
-        )
 
-        if (didUserExists) {
+        if (followService.unFollowUserIfExists(request)) {
             call.respond(
                 HttpStatusCode.OK,
                 BasicApiResponse(success = true)

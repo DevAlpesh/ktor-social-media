@@ -7,6 +7,8 @@ import com.devalpesh.data.repository.post.PostRepositoryImpl
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.repository.user.UserRepositoryImpl
 import com.devalpesh.data.request.CreatePostRequest
+import com.devalpesh.service.PostService
+import com.devalpesh.service.UserService
 import com.devalpesh.util.Constant
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
@@ -29,4 +31,8 @@ val mainModule = module {
     single<PostRepository> {
         PostRepositoryImpl(get())
     }
+
+    single { UserService(get()) }
+
+    single { PostService(get()) }
 }

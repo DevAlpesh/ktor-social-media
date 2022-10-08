@@ -36,7 +36,7 @@ fun Route.createPostRoute(
             if (!isEmailByUser) {
                 call.respond(
                     HttpStatusCode.Unauthorized,
-                    "Unauthenticated access."
+                    "Unauthenticated"
                 )
                 return@post
             }
@@ -44,14 +44,16 @@ fun Route.createPostRoute(
             val didUserExist = postService.createPostIfUserExists(request)
             if (!didUserExist) {
                 call.respond(
-                    HttpStatusCode.OK, BasicApiResponse(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
                         success = false,
                         message = ApiResponseMessages.USER_NOT_FOUND
                     )
                 )
             } else {
                 call.respond(
-                    HttpStatusCode.OK, BasicApiResponse(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
                         success = true
                     )
                 )

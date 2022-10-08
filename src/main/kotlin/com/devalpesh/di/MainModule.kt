@@ -34,8 +34,6 @@ val mainModule = module {
     }
 
     single { FollowService(get()) }
-
     single { UserService(get()) }
-
     single { PostService(get()) }
 }

@@ -7,6 +7,7 @@ import com.devalpesh.data.repository.post.PostRepositoryImpl
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.repository.user.UserRepositoryImpl
 import com.devalpesh.data.request.CreatePostRequest
+import com.devalpesh.service.FollowService
 import com.devalpesh.service.PostService
 import com.devalpesh.service.UserService
 import com.devalpesh.util.Constant
@@ -31,6 +32,8 @@ val mainModule = module {
     single<PostRepository> {
         PostRepositoryImpl(get())
     }
+
+    single { FollowService(get()) }
 
     single { UserService(get()) }
 

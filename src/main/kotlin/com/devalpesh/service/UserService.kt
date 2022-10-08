@@ -13,6 +13,10 @@ class UserService(
         return repository.getUserByEmail(email) != null
     }
 
+    suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean {
+        return repository.doesEmailBelongToUserId(email, userId)
+    }
+
     fun validateCreateAccountRequest(request: CreateAccountRequest): ValidationEvents {
         if (request.email.isBlank() || request.password.isBlank() || request.username.isBlank()) {
             return ValidationEvents.ErrorFieldEmpty

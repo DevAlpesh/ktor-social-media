@@ -1,6 +1,5 @@
 package com.devalpesh.routes
 
-import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.request.FollowUpdateRequest
 import com.devalpesh.data.response.ApiResponseMessages.USER_NOT_FOUND
 import com.devalpesh.data.response.BasicApiResponse

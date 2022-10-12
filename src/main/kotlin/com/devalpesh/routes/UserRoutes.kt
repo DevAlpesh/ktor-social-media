@@ -2,8 +2,8 @@ package com.devalpesh.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.devalpesh.data.request.LoginRequest
 import com.devalpesh.data.request.CreateAccountRequest
+import com.devalpesh.data.request.LoginRequest
 import com.devalpesh.data.response.ApiResponseMessages.FIELDS_BLANK
 import com.devalpesh.data.response.ApiResponseMessages.INVALID_CREDENTIALS
 import com.devalpesh.data.response.ApiResponseMessages.USER_ALREADY_EXIST

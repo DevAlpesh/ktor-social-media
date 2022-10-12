@@ -1,10 +1,7 @@
 package com.devalpesh.plugins
 
 import com.devalpesh.routes.*
-import com.devalpesh.service.FollowService
-import com.devalpesh.service.LikeService
-import com.devalpesh.service.PostService
-import com.devalpesh.service.UserService
+import com.devalpesh.service.*
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 import org.koin.ktor.ext.inject
@@ -15,6 +12,7 @@ fun Application.configureRouting() {
     val followService: FollowService by inject()
     val postService: PostService by inject()
     val likeService: LikeService by inject()
+    val commentService: CommentService by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -31,17 +29,22 @@ fun Application.configureRouting() {
             jwtSecret = jwtSecret
         )
 
-        // Following routes
+        // following routes
         followRoute(followService)
         unfollowUser(followService)
 
-        // Post routes
+        // post routes
         createPost(postService, userService)
         getPostForFollows(postService, userService)
-        deletePost(postService, userService)
+        deletePost(postService, userService, likeService)
 
-        //Like
+        // like routes
         likeParent(likeService, userService)
         unlikeParent(likeService, userService)
+
+        //comments routes
+        createComments(commentService, userService)
+        deleteComments(commentService, userService, likeService)
+        getCommentsForPost(commentService)
     }
 }

@@ -1,5 +1,7 @@
 package com.devalpesh.di
 
+import com.devalpesh.data.repository.comment.CommentRepository
+import com.devalpesh.data.repository.comment.CommentRepositoryImpl
 import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.repository.follow.FollowRepositoryImpl
 import com.devalpesh.data.repository.likes.LikesRepository
@@ -8,11 +10,7 @@ import com.devalpesh.data.repository.post.PostRepository
 import com.devalpesh.data.repository.post.PostRepositoryImpl
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.repository.user.UserRepositoryImpl
-import com.devalpesh.data.request.CreatePostRequest
-import com.devalpesh.service.FollowService
-import com.devalpesh.service.LikeService
-import com.devalpesh.service.PostService
-import com.devalpesh.service.UserService
+import com.devalpesh.service.*
 import com.devalpesh.util.Constant
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
@@ -40,8 +38,13 @@ val mainModule = module {
         LikesRepositoryImpl(get())
     }
 
+    single<CommentRepository> {
+        CommentRepositoryImpl(get())
+    }
+
     single { FollowService(get()) }
     single { UserService(get()) }
     single { PostService(get()) }
     single { LikeService(get()) }
+    single { CommentService(get()) }
 }

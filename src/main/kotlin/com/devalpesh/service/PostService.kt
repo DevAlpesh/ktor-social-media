@@ -36,7 +36,7 @@ class PostService(
         return repository.getPost(postId)
     }
 
-    suspend fun deletePost(postId: String){
+    suspend fun deletePost(postId: String) {
         return repository.deletePost(postId)
     }
 

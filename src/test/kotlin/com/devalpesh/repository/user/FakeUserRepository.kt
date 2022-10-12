@@ -5,7 +5,7 @@ import com.devalpesh.data.repository.user.UserRepository
 
 class FakeUserRepository : UserRepository {
 
-    val users = mutableListOf<User>()
+    private val users = mutableListOf<User>()
 
     override suspend fun createUser(user: User) {
         users.add(user)
@@ -22,6 +22,11 @@ class FakeUserRepository : UserRepository {
     override suspend fun doesPasswordForUserMatch(email: String, enteredPassword: String): Boolean {
         val user = getUserByEmail(email)
         return user?.password == enteredPassword
+    }
+
+    override suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean {
+       // TODO("Not yet implemented")
+        return false
     }
 
 }

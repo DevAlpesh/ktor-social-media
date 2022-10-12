@@ -2,8 +2,8 @@ package com.devalpesh.plugins
 
 import com.devalpesh.routes.*
 import com.devalpesh.service.*
-import io.ktor.server.routing.*
 import io.ktor.server.application.*
+import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {

@@ -33,7 +33,7 @@ class CommentService(
         return repository.deleteComment(commentId)
     }
 
-    suspend fun getCommentsForPost(postId : String) : List<Comment>{
+    suspend fun getCommentsForPost(postId: String): List<Comment> {
         return repository.getCommentsForPost(postId)
     }
 

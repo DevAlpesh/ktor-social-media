@@ -14,7 +14,6 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -47,7 +46,7 @@ internal class UserRoutesKtTest : KoinTest {
         withTestApplication(
             moduleFunction = {
                 install(Routing) {
-                    createUserRoute(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
@@ -79,7 +78,7 @@ internal class UserRoutesKtTest : KoinTest {
             moduleFunction = {
                 configureSerialization()
                 install(Routing) {
-                    createUserRoute(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
@@ -124,7 +123,7 @@ internal class UserRoutesKtTest : KoinTest {
             moduleFunction = {
                 configureSerialization()
                 install(Routing) {
-                    createUserRoute(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
@@ -157,7 +156,7 @@ internal class UserRoutesKtTest : KoinTest {
             moduleFunction = {
                 configureSerialization()
                 install(Routing) {
-                    createUserRoute(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {

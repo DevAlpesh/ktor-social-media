@@ -2,8 +2,6 @@ package com.devalpesh.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.devalpesh.data.repository.user.UserRepository
-import com.devalpesh.data.models.User
 import com.devalpesh.data.request.LoginRequest
 import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.response.ApiResponseMessages.FIELDS_BLANK
@@ -19,7 +17,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.util.*
 
-fun Route.createUserRoute(
+fun Route.createUser(
     service: UserService
 ) {
     post("/api/user/create") {

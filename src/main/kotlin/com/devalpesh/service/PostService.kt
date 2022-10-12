@@ -32,4 +32,12 @@ class PostService(
         )
     }
 
+    suspend fun getPost(postId: String): Post? {
+        return repository.getPost(postId)
+    }
+
+    suspend fun deletePost(postId: String){
+        return repository.deletePost(postId)
+    }
+
 }

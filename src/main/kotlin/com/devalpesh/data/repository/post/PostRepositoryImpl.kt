@@ -33,10 +33,10 @@ class PostRepositoryImpl(
         page: Int,
         pageSize: Int
     ): List<Post> {
-        val userIdsFromFollows = following.find(Following::followedUserId eq userId)
+        val userIdsFromFollows = following.find(Following::followingUserId eq userId)
             .toList()
             .map {
-                it.followingUserId
+                it.followedUserId
             }
         return posts.find(Post::userId `in` userIdsFromFollows)
             .skip(page * pageSize)

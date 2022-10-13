@@ -17,7 +17,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.createPost(
-    postService: PostService, userService: UserService
+    postService: PostService
 ) {
     authenticate {
         post("/api/post/create") {
@@ -26,64 +26,50 @@ fun Route.createPost(
                 return@post
             }
 
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
-                val didUserExist = postService.createPostIfUserExists(request)
-                if (!didUserExist) {
-                    call.respond(
-                        HttpStatusCode.OK, BasicApiResponse(
-                            success = false, message = ApiResponseMessages.USER_NOT_FOUND
-                        )
+            val didUserExist = postService.createPostIfUserExists(request, call.userId)
+            if (!didUserExist) {
+                call.respond(
+                    HttpStatusCode.OK, BasicApiResponse(
+                        success = false, message = ApiResponseMessages.USER_NOT_FOUND
                     )
-                } else {
-                    call.respond(
-                        HttpStatusCode.OK, BasicApiResponse(
-                            success = true
-                        )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.OK, BasicApiResponse(
+                        success = true
                     )
-                }
+                )
             }
         }
     }
 }
 
 fun Route.getPostForFollows(
-    postService: PostService, userService: UserService
+    postService: PostService
 ) {
     authenticate {
         get("/api/post/get") {
-            val userId = call.parameters[QueryParams.PARAM_USER_ID] ?: kotlin.run {
-                call.respond(HttpStatusCode.BadRequest)
-                return@get
-            }
+
 
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
             val pageSize = call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
                 ?: Constant.DEFAULT_POST_PAGE_SIZE
 
-            ifEmailBelongsToUser(
-                userId = userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
-                val post = postService.getPostForFollows(
-                    userId,
-                    page,
-                    pageSize
-                )
-                call.respond(
-                    HttpStatusCode.OK,
-                    post
-                )
-            }
+            val post = postService.getPostForFollows(
+                call.userId,
+                page,
+                pageSize
+            )
+            call.respond(
+                HttpStatusCode.OK,
+                post
+            )
         }
     }
 }
 
 fun Route.deletePost(
     postService: PostService,
-    userService: UserService,
     likeService: LikeService
 ) {
     authenticate {
@@ -101,17 +87,15 @@ fun Route.deletePost(
                 )
                 return@delete
             }
-
-            ifEmailBelongsToUser(
-                userId = post.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
+            if (post.userId == call.userId) {
                 postService.deletePost(request.postId)
                 likeService.deleteLikesForParent(request.postId)
                 // TODO : Delete comments form post
                 call.respond(
                     HttpStatusCode.OK
                 )
+            } else {
+                call.respond(HttpStatusCode.Unauthorized)
             }
         }
     }

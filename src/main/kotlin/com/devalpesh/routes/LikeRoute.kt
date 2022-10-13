@@ -14,7 +14,6 @@ import io.ktor.server.routing.*
 
 fun Route.likeParent(
     likeService: LikeService,
-    userService: UserService
 ) {
     authenticate {
         post("/api/like") {
@@ -23,27 +22,22 @@ fun Route.likeParent(
                 return@post
             }
 
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
-                val likeSuccessful = likeService.likeParent(request.userId, request.parentId)
-                if (likeSuccessful) {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            success = true,
-                        )
+            val likeSuccessful = likeService.likeParent(call.userId, request.parentId)
+            if (likeSuccessful) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = true,
                     )
-                } else {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            success = false,
-                            message = ApiResponseMessages.USER_NOT_FOUND
-                        )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = false,
+                        message = ApiResponseMessages.USER_NOT_FOUND
                     )
-                }
+                )
             }
         }
     }
@@ -51,7 +45,6 @@ fun Route.likeParent(
 
 fun Route.unlikeParent(
     likeService: LikeService,
-    userService: UserService
 ) {
     authenticate {
         delete("/api/unlike") {
@@ -60,27 +53,22 @@ fun Route.unlikeParent(
                 return@delete
             }
 
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
-                val unlikeSuccessful = likeService.unlikeParent(request.userId, request.parentId)
-                if (unlikeSuccessful) {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            success = true,
-                        )
+            val unlikeSuccessful = likeService.unlikeParent(call.userId, request.parentId)
+            if (unlikeSuccessful) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = true,
                     )
-                } else {
-                    call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            success = false,
-                            message = ApiResponseMessages.USER_NOT_FOUND
-                        )
+                )
+            } else {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = false,
+                        message = ApiResponseMessages.USER_NOT_FOUND
                     )
-                }
+                )
             }
         }
     }

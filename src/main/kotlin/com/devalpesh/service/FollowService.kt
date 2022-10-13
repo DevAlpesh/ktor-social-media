@@ -6,16 +6,16 @@ import com.devalpesh.data.request.FollowUpdateRequest
 class FollowService(
     val repository: FollowRepository
 ) {
-    suspend fun followUserIfExists(request: FollowUpdateRequest): Boolean {
+    suspend fun followUserIfExists(request: FollowUpdateRequest, followingUserId: String): Boolean {
         return repository.followUserIfExists(
-            request.followingUserId,
+            followingUserId,
             request.followedUserId
         )
     }
 
-    suspend fun unFollowUserIfExists(request: FollowUpdateRequest): Boolean {
+    suspend fun unFollowUserIfExists(request: FollowUpdateRequest, followingUserId: String): Boolean {
         return repository.unfollowedUserIfExists(
-            request.followingUserId,
+            followingUserId,
             request.followedUserId
         )
     }

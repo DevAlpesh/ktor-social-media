@@ -17,7 +17,6 @@ import io.ktor.server.routing.*
 
 fun Route.createComments(
     commentService: CommentService,
-    userService: UserService,
 ) {
     authenticate {
         post("/api/comment/create") {
@@ -26,39 +25,34 @@ fun Route.createComments(
                 return@post
             }
 
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
-                when (commentService.createComment(request)) {
-                    is CommentService.ValidationEvent.ErrorFieldEmpty -> {
-                        call.respond(
-                            HttpStatusCode.OK,
-                            BasicApiResponse(
-                                success = false,
-                                ApiResponseMessages.FIELDS_BLANK
-                            )
+            when (commentService.createComment(request, call.userId)) {
+                is CommentService.ValidationEvent.ErrorFieldEmpty -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse(
+                            success = false,
+                            ApiResponseMessages.FIELDS_BLANK
                         )
-                    }
+                    )
+                }
 
-                    is CommentService.ValidationEvent.CommentTooLong -> {
-                        call.respond(
-                            HttpStatusCode.OK,
-                            BasicApiResponse(
-                                success = false,
-                                ApiResponseMessages.COMMENT_TOO_LONG
-                            )
+                is CommentService.ValidationEvent.CommentTooLong -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse(
+                            success = false,
+                            ApiResponseMessages.COMMENT_TOO_LONG
                         )
-                    }
+                    )
+                }
 
-                    is CommentService.ValidationEvent.Success -> {
-                        call.respond(
-                            HttpStatusCode.OK,
-                            BasicApiResponse(
-                                success = true
-                            )
+                is CommentService.ValidationEvent.Success -> {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse(
+                            success = true
                         )
-                    }
+                    )
                 }
             }
 
@@ -88,7 +82,6 @@ fun Route.getCommentsForPost(
 
 fun Route.deleteComments(
     commentService: CommentService,
-    userService: UserService,
     likeService: LikeService
 ) {
     authenticate {
@@ -98,17 +91,19 @@ fun Route.deleteComments(
                 return@delete
             }
 
-            ifEmailBelongsToUser(
-                userId = request.userId,
-                validateEmail = userService::doesEmailBelongToUserId
-            ) {
-                val deleted = commentService.deleteComment(request.commentId)
-                if (deleted) {
-                    likeService.deleteLikesForParent(request.commentId)
-                    call.respond(HttpStatusCode.OK, BasicApiResponse(success = true))
-                } else {
-                    call.respond(HttpStatusCode.NotFound, BasicApiResponse(success = false))
-                }
+            val comment = commentService.getCommentById(request.commentId)
+
+            if (comment?.userId != call.userId) {
+                call.respond(HttpStatusCode.Unauthorized)
+                return@delete
+            }
+
+            val deleted = commentService.deleteComment(request.commentId)
+            if (deleted) {
+                likeService.deleteLikesForParent(request.commentId)
+                call.respond(HttpStatusCode.OK, BasicApiResponse(success = true))
+            } else {
+                call.respond(HttpStatusCode.NotFound, BasicApiResponse(success = false))
             }
         }
     }

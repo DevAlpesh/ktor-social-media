@@ -2,6 +2,7 @@ package com.devalpesh.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.devalpesh.data.models.User
 import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.request.LoginRequest
 import com.devalpesh.data.response.ApiResponseMessages.FIELDS_BLANK
@@ -10,8 +11,10 @@ import com.devalpesh.data.response.ApiResponseMessages.USER_ALREADY_EXIST
 import com.devalpesh.data.response.AuthResponse
 import com.devalpesh.data.response.BasicApiResponse
 import com.devalpesh.service.UserService
+import com.devalpesh.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -103,6 +106,30 @@ fun Route.loginUser(
                 HttpStatusCode.OK, BasicApiResponse(
                     success = false, message = INVALID_CREDENTIALS
                 )
+            )
+        }
+    }
+}
+
+fun Route.searchUser(
+    userService: UserService
+){
+    authenticate {
+        get("/api/user/search"){
+            val query = call.parameters[QueryParams.PARAM_QUERY]
+
+            if (query.isNullOrBlank()){
+                call.respond(
+                    HttpStatusCode.OK,
+                    listOf<User>()
+                )
+                return@get
+            }
+            val searchResult  = userService.searchForUser(query,call.userId)
+
+            call.respond(
+                HttpStatusCode.OK,
+                searchResult
             )
         }
     }

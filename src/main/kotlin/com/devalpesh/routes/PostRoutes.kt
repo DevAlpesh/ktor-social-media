@@ -4,9 +4,9 @@ import com.devalpesh.data.request.CreatePostRequest
 import com.devalpesh.data.request.DeletePostRequest
 import com.devalpesh.data.response.ApiResponseMessages
 import com.devalpesh.data.response.BasicApiResponse
+import com.devalpesh.service.CommentService
 import com.devalpesh.service.LikeService
 import com.devalpesh.service.PostService
-import com.devalpesh.service.UserService
 import com.devalpesh.util.Constant
 import com.devalpesh.util.QueryParams
 import io.ktor.http.*
@@ -70,7 +70,8 @@ fun Route.getPostForFollows(
 
 fun Route.deletePost(
     postService: PostService,
-    likeService: LikeService
+    likeService: LikeService,
+    commentService: CommentService
 ) {
     authenticate {
         delete("/api/post/delete") {
@@ -90,7 +91,7 @@ fun Route.deletePost(
             if (post.userId == call.userId) {
                 postService.deletePost(request.postId)
                 likeService.deleteLikesForParent(request.postId)
-                // TODO : Delete comments form post
+                commentService.deleteCommentsForPost(request.postId)
                 call.respond(
                     HttpStatusCode.OK
                 )

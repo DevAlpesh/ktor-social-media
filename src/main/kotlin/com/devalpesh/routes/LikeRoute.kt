@@ -3,8 +3,9 @@ package com.devalpesh.routes
 import com.devalpesh.data.request.LikeUpdateRequest
 import com.devalpesh.data.response.ApiResponseMessages
 import com.devalpesh.data.response.BasicApiResponse
+import com.devalpesh.service.ActivityService
 import com.devalpesh.service.LikeService
-import com.devalpesh.service.UserService
+import com.devalpesh.data.util.ParentType
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -14,6 +15,7 @@ import io.ktor.server.routing.*
 
 fun Route.likeParent(
     likeService: LikeService,
+    activityService: ActivityService
 ) {
     authenticate {
         post("/api/like") {
@@ -22,8 +24,15 @@ fun Route.likeParent(
                 return@post
             }
 
-            val likeSuccessful = likeService.likeParent(call.userId, request.parentId)
+            val userId = call.userId
+
+            val likeSuccessful = likeService.likeParent(userId, request.parentId, request.parentType)
             if (likeSuccessful) {
+                activityService.addLikeActivity(
+                    byUserId = userId,
+                    parentType = ParentType.fromType(request.parentType),
+                    parentId = request.parentId
+                )
                 call.respond(
                     HttpStatusCode.OK,
                     BasicApiResponse(
@@ -45,6 +54,7 @@ fun Route.likeParent(
 
 fun Route.unlikeParent(
     likeService: LikeService,
+    activityService: ActivityService
 ) {
     authenticate {
         delete("/api/unlike") {

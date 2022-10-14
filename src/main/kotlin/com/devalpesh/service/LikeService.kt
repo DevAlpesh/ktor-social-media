@@ -5,8 +5,8 @@ import com.devalpesh.data.repository.likes.LikesRepository
 class LikeService(
     private val repository: LikesRepository
 ) {
-    suspend fun likeParent(userId: String, parentId: String): Boolean {
-        return repository.likeParent(userId, parentId)
+    suspend fun likeParent(userId: String, parentId: String, parentType: Int): Boolean {
+        return repository.likeParent(userId, parentId, parentType)
     }
 
     suspend fun unlikeParent(userId: String, parentId: String): Boolean {

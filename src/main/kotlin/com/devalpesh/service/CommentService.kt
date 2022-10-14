@@ -14,7 +14,7 @@ class CommentService(
                 return ValidationEvent.ErrorFieldEmpty
             }
             if (comment.length > Constant.MAX_COMMENT_LENGTH) {
-                return ValidationEvent.CommentTooLong
+                return ValidationEvent.ErrorCommentTooLong
             }
         }
 
@@ -33,6 +33,10 @@ class CommentService(
         return repository.deleteComment(commentId)
     }
 
+    suspend fun deleteCommentsForPost(postId: String) {
+        repository.deleteCommentsFromPost(postId)
+    }
+
     suspend fun getCommentsForPost(postId: String): List<Comment> {
         return repository.getCommentsForPost(postId)
     }
@@ -41,9 +45,10 @@ class CommentService(
         return repository.getComments(commentId)
     }
 
+
     sealed class ValidationEvent {
         object ErrorFieldEmpty : ValidationEvent()
-        object CommentTooLong : ValidationEvent()
+        object ErrorCommentTooLong : ValidationEvent()
         object Success : ValidationEvent()
     }
 

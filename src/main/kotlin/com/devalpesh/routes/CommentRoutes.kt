@@ -4,9 +4,9 @@ import com.devalpesh.data.request.CreateCommentRequest
 import com.devalpesh.data.request.DeleteCommentRequest
 import com.devalpesh.data.response.ApiResponseMessages
 import com.devalpesh.data.response.BasicApiResponse
+import com.devalpesh.service.ActivityService
 import com.devalpesh.service.CommentService
 import com.devalpesh.service.LikeService
-import com.devalpesh.service.UserService
 import com.devalpesh.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -17,6 +17,7 @@ import io.ktor.server.routing.*
 
 fun Route.createComments(
     commentService: CommentService,
+    activityService: ActivityService
 ) {
     authenticate {
         post("/api/comment/create") {
@@ -25,31 +26,32 @@ fun Route.createComments(
                 return@post
             }
 
-            when (commentService.createComment(request, call.userId)) {
+            val userId = call.userId
+
+            when (commentService.createComment(request, userId)) {
                 is CommentService.ValidationEvent.ErrorFieldEmpty -> {
                     call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            success = false,
-                            ApiResponseMessages.FIELDS_BLANK
+                        HttpStatusCode.OK, BasicApiResponse(
+                            success = false, ApiResponseMessages.FIELDS_BLANK
                         )
                     )
                 }
 
-                is CommentService.ValidationEvent.CommentTooLong -> {
+                is CommentService.ValidationEvent.ErrorCommentTooLong -> {
                     call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
-                            success = false,
-                            ApiResponseMessages.COMMENT_TOO_LONG
+                        HttpStatusCode.OK, BasicApiResponse(
+                            success = false, ApiResponseMessages.COMMENT_TOO_LONG
                         )
                     )
                 }
 
                 is CommentService.ValidationEvent.Success -> {
+                    activityService.addCommentActivity(
+                        byUserId = userId,
+                        postId = request.postId
+                    )
                     call.respond(
-                        HttpStatusCode.OK,
-                        BasicApiResponse(
+                        HttpStatusCode.OK, BasicApiResponse(
                             success = true
                         )
                     )
@@ -73,16 +75,14 @@ fun Route.getCommentsForPost(
             val comments = commentService.getCommentsForPost(postId)
 
             call.respond(
-                HttpStatusCode.OK,
-                comments
+                HttpStatusCode.OK, comments
             )
         }
     }
 }
 
 fun Route.deleteComments(
-    commentService: CommentService,
-    likeService: LikeService
+    commentService: CommentService, likeService: LikeService
 ) {
     authenticate {
         delete("/api/comment/delete") {

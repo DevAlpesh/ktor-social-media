@@ -1,5 +1,7 @@
 package com.devalpesh.di
 
+import com.devalpesh.data.repository.activity.ActivityRepository
+import com.devalpesh.data.repository.activity.ActivityRepositoryImpl
 import com.devalpesh.data.repository.comment.CommentRepository
 import com.devalpesh.data.repository.comment.CommentRepositoryImpl
 import com.devalpesh.data.repository.follow.FollowRepository
@@ -42,9 +44,14 @@ val mainModule = module {
         CommentRepositoryImpl(get())
     }
 
+    single<ActivityRepository> {
+        ActivityRepositoryImpl(get())
+    }
+
     single { FollowService(get()) }
     single { UserService(get()) }
     single { PostService(get()) }
     single { LikeService(get()) }
     single { CommentService(get()) }
+    single { ActivityService(get(), get(), get()) }
 }

@@ -30,9 +30,11 @@ fun Application.configureRouting() {
             jwtSecret = jwtSecret
         )
         searchUser(userService)
+        getUserProfile(userService)
+        getPostForProfile(postService)
 
         // following routes
-        followRoute(followService,activityService)
+        followRoute(followService, activityService)
         unfollowUser(followService)
 
         // post routes
@@ -41,11 +43,11 @@ fun Application.configureRouting() {
         deletePost(postService, likeService, commentService)
 
         // like routes
-        likeParent(likeService,activityService)
-        unlikeParent(likeService,activityService)
+        likeParent(likeService, activityService)
+        unlikeParent(likeService, activityService)
 
         //comments routes
-        createComments(commentService,activityService)
+        createComments(commentService, activityService)
         deleteComments(commentService, likeService)
         getCommentsForPost(commentService)
 

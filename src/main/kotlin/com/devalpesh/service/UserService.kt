@@ -4,6 +4,7 @@ import com.devalpesh.data.models.User
 import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.request.CreateAccountRequest
+import com.devalpesh.data.response.ProfileResponse
 import com.devalpesh.data.response.UserResponseItem
 
 class UserService(
@@ -15,8 +16,29 @@ class UserService(
         return userRepository.getUserByEmail(email) != null
     }
 
-    suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean {
-        return userRepository.doesEmailBelongToUserId(email, userId)
+    suspend fun getUserProfile(userId: String, callerUserId: String): ProfileResponse? {
+        val user = userRepository.getUserById(userId) ?: return null
+        val profile = ProfileResponse(
+            username = user.username,
+            bio = user.bio,
+            followingCount = user.followingCount,
+            followerCount = user.followerCount,
+            postCount = user.postCount,
+            profilePictureUrl = user.profileImageUrl,
+            topSkillLinks = user.skills,
+            githubUrl = user.githubUrl,
+            instagramUrl = user.instagramUrl,
+            linkedInUrl = user.linkedInUrl,
+            isOwnProfile = userId == callerUserId,
+            isFollowing = if (userId != callerUserId) {
+                followRepository.doesUserFollow(callerUserId, userId)
+            } else {
+                false
+            }
+        )
+
+        return profile
+
     }
 
     suspend fun getUserByEmail(email: String): User? {

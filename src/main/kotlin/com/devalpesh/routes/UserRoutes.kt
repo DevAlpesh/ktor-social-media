@@ -5,12 +5,15 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.devalpesh.data.models.User
 import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.request.LoginRequest
+import com.devalpesh.data.response.ApiResponseMessages
 import com.devalpesh.data.response.ApiResponseMessages.FIELDS_BLANK
 import com.devalpesh.data.response.ApiResponseMessages.INVALID_CREDENTIALS
 import com.devalpesh.data.response.ApiResponseMessages.USER_ALREADY_EXIST
 import com.devalpesh.data.response.AuthResponse
 import com.devalpesh.data.response.BasicApiResponse
+import com.devalpesh.service.PostService
 import com.devalpesh.service.UserService
+import com.devalpesh.util.Constant
 import com.devalpesh.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -113,23 +116,110 @@ fun Route.loginUser(
 
 fun Route.searchUser(
     userService: UserService
-){
+) {
     authenticate {
-        get("/api/user/search"){
+        get("/api/user/search") {
             val query = call.parameters[QueryParams.PARAM_QUERY]
 
-            if (query.isNullOrBlank()){
+            if (query.isNullOrBlank()) {
                 call.respond(
                     HttpStatusCode.OK,
                     listOf<User>()
                 )
                 return@get
             }
-            val searchResult  = userService.searchForUser(query,call.userId)
+            val searchResult = userService.searchForUser(query, call.userId)
 
             call.respond(
                 HttpStatusCode.OK,
                 searchResult
+            )
+        }
+    }
+}
+
+fun Route.getUserProfile(
+    userService: UserService
+) {
+    authenticate {
+        get("/api/user/profile") {
+            val userId = call.parameters[QueryParams.USER_ID]
+
+            if (userId.isNullOrBlank()) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                )
+                return@get
+            }
+            val profileResponse = userService.getUserProfile(userId, call.userId)
+            if (profileResponse == null) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = false,
+                        message = ApiResponseMessages.USER_NOT_FOUND
+                    )
+                )
+                return@get
+            }
+            call.respond(
+                HttpStatusCode.OK,
+                profileResponse
+            )
+        }
+    }
+}
+
+fun Route.updateUserProfile(
+    userService: UserService
+) {
+    authenticate {
+        put("/api/user/update") {
+            val userId = call.parameters[QueryParams.USER_ID]
+
+            if (userId.isNullOrBlank()) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                )
+                return@put
+            }
+            val profileResponse = userService.getUserProfile(userId, call.userId)
+            if (profileResponse == null) {
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = false,
+                        message = ApiResponseMessages.USER_NOT_FOUND
+                    )
+                )
+                return@put
+            }
+            call.respond(
+                HttpStatusCode.OK,
+                profileResponse
+            )
+        }
+    }
+}
+
+fun Route.getPostForProfile(
+    postService: PostService
+) {
+    authenticate {
+        get("/api/user/post") {
+
+            val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
+            val pageSize = call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
+                ?: Constant.DEFAULT_POST_PAGE_SIZE
+
+            val post = postService.getPostForProfile(
+                userId = call.userId,
+                page = page,
+                pageSize = pageSize
+            )
+            call.respond(
+                HttpStatusCode.OK,
+                post
             )
         }
     }

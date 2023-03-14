@@ -84,13 +84,9 @@ class UserService(
 
     suspend fun searchForUser(query: String, userId: String): List<UserResponseItem> {
         val users = userRepository.searchForUser(query)
-
         val followsByUser = followRepository.getFollowsByUser(userId)
-
         return users.map { user: User ->
-
             val isFollowing = followsByUser.find { it.followedUserId == userId } != null
-
             UserResponseItem(
                 username = user.username,
                 profilePictureUrl = user.profileImageUrl,

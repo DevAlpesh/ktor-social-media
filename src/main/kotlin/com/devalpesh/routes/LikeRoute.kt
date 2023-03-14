@@ -6,6 +6,8 @@ import com.devalpesh.data.response.BasicApiResponse
 import com.devalpesh.service.ActivityService
 import com.devalpesh.service.LikeService
 import com.devalpesh.data.util.ParentType
+import com.devalpesh.util.Constant
+import com.devalpesh.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -80,6 +82,32 @@ fun Route.unlikeParent(
                     )
                 )
             }
+        }
+    }
+}
+
+fun Route.getLikeForParent(likeService: LikeService) {
+    authenticate {
+        get("/api/like/parent") {
+
+            val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
+            val pageSize = call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
+                ?: Constant.DEFAULT_POST_PAGE_SIZE
+
+            val parentId = call.parameters[QueryParams.PARAM_PARENT_ID] ?: kotlin.run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@get
+            }
+            val userWhoLikedParent = likeService.getUserWhoLikesParent(
+                parentId = parentId,
+                call.userId,
+                page,
+                pageSize
+            )
+            call.respond(
+                HttpStatusCode.OK,
+                userWhoLikedParent
+            )
         }
     }
 }

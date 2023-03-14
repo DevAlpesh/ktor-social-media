@@ -10,6 +10,6 @@ interface UserRepository {
     suspend fun updateUser(userId: String, profileImageUrl: String, updateProfileRequest: UpdateProfileRequest): Boolean
     suspend fun doesPasswordForUserMatch(email: String, enteredPassword: String): Boolean
     suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean
-
     suspend fun searchForUser(query: String): List<User>
+    suspend fun getUsers(userIds : List<String>) : List<User>
 }

@@ -1,10 +1,12 @@
 package com.devalpesh.data.repository.user
 
 import com.devalpesh.data.models.User
+import com.devalpesh.data.response.UpdateProfileRequest
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.or
 import org.litote.kmongo.regex
+import org.litote.kmongo.setValue
 
 class UserRepositoryImpl(
     db: CoroutineDatabase
@@ -22,6 +24,32 @@ class UserRepositoryImpl(
 
     override suspend fun getUserByEmail(email: String): User? {
         return users.findOne(User::email eq email)
+    }
+
+    override suspend fun updateUser(
+        userId: String,
+        profileImageUrl: String,
+        updateProfileRequest: UpdateProfileRequest
+    ): Boolean {
+        val user = getUserById(userId) ?: return false
+        return users.updateOneById(
+            id = userId,
+            update = User(
+                email = user.email,
+                username = updateProfileRequest.username,
+                password = user.password,
+                profileImageUrl = profileImageUrl,
+                bio = updateProfileRequest.bio,
+                githubUrl = updateProfileRequest.githubUrl,
+                instagramUrl = updateProfileRequest.instagramUrl,
+                linkedInUrl = updateProfileRequest.linkedInUrl,
+                skills = updateProfileRequest.skill,
+                followerCount = user.followerCount,
+                postCount = user.postCount,
+                followingCount = user.followingCount,
+                id = user.id
+            )
+        ).wasAcknowledged()
     }
 
     override suspend fun doesPasswordForUserMatch(
@@ -42,6 +70,22 @@ class UserRepositoryImpl(
                 User::username regex Regex("(?i).*$query*."),
                 User::email eq query
             )
-        ).toList()
+        )
+            .descendingSort(User::followerCount)
+            .toList()
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

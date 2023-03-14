@@ -6,7 +6,7 @@ val kmong_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.8.0"
     id("io.ktor.plugin") version "2.1.1"
 }
 
@@ -56,7 +56,7 @@ dependencies {
 
     // Test dependencies
     // Gson
-    testImplementation("com.google.code.gson:gson:2.9.1")
+    testImplementation("com.google.code.gson:gson:2.10")
     // Koin
     testImplementation("io.insert-koin:koin-test:$koin_version")
     // Ktor Test

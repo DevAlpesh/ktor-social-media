@@ -5,6 +5,7 @@ import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.response.ProfileResponse
+import com.devalpesh.data.response.UpdateProfileRequest
 import com.devalpesh.data.response.UserResponseItem
 
 class UserService(
@@ -18,7 +19,7 @@ class UserService(
 
     suspend fun getUserProfile(userId: String, callerUserId: String): ProfileResponse? {
         val user = userRepository.getUserById(userId) ?: return null
-        val profile = ProfileResponse(
+        return ProfileResponse(
             username = user.username,
             bio = user.bio,
             followingCount = user.followingCount,
@@ -36,9 +37,6 @@ class UserService(
                 false
             }
         )
-
-        return profile
-
     }
 
     suspend fun getUserByEmail(email: String): User? {
@@ -76,6 +74,14 @@ class UserService(
         object SuccessEvent : ValidationEvents()
     }
 
+    suspend fun updateUser(
+        userId: String,
+        profileImageUrl: String,
+        updateProfileRequest: UpdateProfileRequest
+    ) : Boolean {
+      return  userRepository.updateUser(userId, profileImageUrl, updateProfileRequest)
+    }
+
     suspend fun searchForUser(query: String, userId: String): List<UserResponseItem> {
         val users = userRepository.searchForUser(query)
 
@@ -94,3 +100,13 @@ class UserService(
         }
     }
 }
+
+
+
+
+
+
+
+
+
+

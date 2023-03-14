@@ -6,5 +6,5 @@ data class UpdateProfileRequest(
     val githubUrl: String,
     val instagramUrl: String,
     val linkedInUrl: String,
-    val skill: List<String>,
+    val skill: List<String>
 )

@@ -31,7 +31,7 @@ fun Route.createComments(
             when (commentService.createComment(request, userId)) {
                 is CommentService.ValidationEvent.ErrorFieldEmpty -> {
                     call.respond(
-                        HttpStatusCode.OK, BasicApiResponse(
+                        HttpStatusCode.OK, BasicApiResponse<Unit>(
                             success = false, ApiResponseMessages.FIELDS_BLANK
                         )
                     )
@@ -39,7 +39,7 @@ fun Route.createComments(
 
                 is CommentService.ValidationEvent.ErrorCommentTooLong -> {
                     call.respond(
-                        HttpStatusCode.OK, BasicApiResponse(
+                        HttpStatusCode.OK, BasicApiResponse<Unit>(
                             success = false, ApiResponseMessages.COMMENT_TOO_LONG
                         )
                     )
@@ -51,7 +51,7 @@ fun Route.createComments(
                         postId = request.postId
                     )
                     call.respond(
-                        HttpStatusCode.OK, BasicApiResponse(
+                        HttpStatusCode.OK, BasicApiResponse<Unit>(
                             success = true
                         )
                     )
@@ -101,9 +101,9 @@ fun Route.deleteComments(
             val deleted = commentService.deleteComment(request.commentId)
             if (deleted) {
                 likeService.deleteLikesForParent(request.commentId)
-                call.respond(HttpStatusCode.OK, BasicApiResponse(success = true))
+                call.respond(HttpStatusCode.OK, BasicApiResponse<Unit>(success = true))
             } else {
-                call.respond(HttpStatusCode.NotFound, BasicApiResponse(success = false))
+                call.respond(HttpStatusCode.NotFound, BasicApiResponse<Unit>(success = false))
             }
         }
     }

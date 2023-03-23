@@ -1,6 +1,7 @@
 package com.devalpesh.data.response
 
-data class BasicApiResponse(
+data class BasicApiResponse<T>(
     val success: Boolean,
-    val message: String? = ""
+    val message: String? = "",
+    val data: T? = null
 )

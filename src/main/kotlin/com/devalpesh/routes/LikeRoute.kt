@@ -37,14 +37,14 @@ fun Route.likeParent(
                 )
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         success = true,
                     )
                 )
             } else {
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         success = false,
                         message = ApiResponseMessages.USER_NOT_FOUND
                     )
@@ -69,14 +69,14 @@ fun Route.unlikeParent(
             if (unlikeSuccessful) {
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         success = true,
                     )
                 )
             } else {
                 call.respond(
                     HttpStatusCode.OK,
-                    BasicApiResponse(
+                    BasicApiResponse<Unit>(
                         success = false,
                         message = ApiResponseMessages.USER_NOT_FOUND
                     )

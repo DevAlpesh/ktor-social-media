@@ -2,14 +2,15 @@ package com.devalpesh.routes
 
 import com.devalpesh.data.request.CreatePostRequest
 import com.devalpesh.data.request.DeletePostRequest
-import com.devalpesh.data.response.ApiResponseMessages
 import com.devalpesh.data.response.BasicApiResponse
-import com.devalpesh.data.response.UpdateProfileRequest
 import com.devalpesh.service.CommentService
 import com.devalpesh.service.LikeService
 import com.devalpesh.service.PostService
-import com.devalpesh.service.UserService
-import com.devalpesh.util.Constant
+import com.devalpesh.util.Constant.BASE_URL
+import com.devalpesh.util.Constant.DEFAULT_POST_PAGE_SIZE
+import com.devalpesh.util.Constant.POST_DIR
+import com.devalpesh.util.Constant.POST_PICTURE_PATH
+import com.devalpesh.util.Constant.PROFILE_DIR
 import com.devalpesh.util.QueryParams
 import com.devalpesh.util.save
 import com.google.gson.Gson
@@ -22,7 +23,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import java.io.File
-import java.util.*
 
 fun Route.createPost(
     postService: PostService,
@@ -45,7 +45,7 @@ fun Route.createPost(
                     }
 
                     is PartData.FileItem -> {
-                        fileName = partData.save(Constant.POST_PICTURE_PATH)
+                        fileName = partData.save(POST_PICTURE_PATH)
                     }
 
                     is PartData.BinaryItem -> Unit
@@ -53,7 +53,7 @@ fun Route.createPost(
                 }
             }
 
-            val postPictureUrl = "${Constant.BASE_URL}src/main/${Constant.POST_PICTURE_PATH}$fileName"
+            val postPictureUrl = "$BASE_URL$POST_DIR/$fileName"
 
             createPostRequest?.let { request ->
                 val createPostAcknowledged = postService.createPost(
@@ -68,7 +68,7 @@ fun Route.createPost(
                         )
                     )
                 } else {
-                    File("${Constant.POST_PICTURE_PATH}/$fileName").delete()
+                    File("${POST_PICTURE_PATH}/$fileName").delete()
                     call.respond(HttpStatusCode.InternalServerError)
                 }
             } ?: kotlin.run {
@@ -88,7 +88,7 @@ fun Route.getPostForFollows(
 
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
             val pageSize = call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
-                ?: Constant.DEFAULT_POST_PAGE_SIZE
+                ?: DEFAULT_POST_PAGE_SIZE
 
             val post = postService.getPostForFollows(
                 call.userId,

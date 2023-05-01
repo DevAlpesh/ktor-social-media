@@ -1,21 +1,16 @@
 package com.devalpesh.routes
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import com.devalpesh.data.models.User
-import com.devalpesh.data.request.CreateAccountRequest
-import com.devalpesh.data.request.LoginRequest
 import com.devalpesh.data.response.ApiResponseMessages
-import com.devalpesh.data.response.ApiResponseMessages.FIELDS_BLANK
-import com.devalpesh.data.response.ApiResponseMessages.INVALID_CREDENTIALS
-import com.devalpesh.data.response.ApiResponseMessages.USER_ALREADY_EXIST
-import com.devalpesh.data.response.AuthResponse
 import com.devalpesh.data.response.BasicApiResponse
 import com.devalpesh.data.response.UpdateProfileRequest
+import com.devalpesh.data.response.UserResponseItem
 import com.devalpesh.service.PostService
 import com.devalpesh.service.UserService
 import com.devalpesh.util.Constant
+import com.devalpesh.util.Constant.BANNER_DIR
+import com.devalpesh.util.Constant.BANNER_IMAGE_PATH
 import com.devalpesh.util.Constant.BASE_URL
+import com.devalpesh.util.Constant.PROFILE_DIR
 import com.devalpesh.util.Constant.PROFILE_PICTURE_PATH
 import com.devalpesh.util.QueryParams
 import com.devalpesh.util.save
@@ -29,7 +24,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import java.io.File
-import java.util.*
 
 
 fun Route.searchUser(
@@ -41,16 +35,14 @@ fun Route.searchUser(
 
             if (query.isNullOrBlank()) {
                 call.respond(
-                    HttpStatusCode.OK,
-                    listOf<User>()
+                    HttpStatusCode.OK, listOf<UserResponseItem>()
                 )
                 return@get
             }
             val searchResult = userService.searchForUser(query, call.userId)
 
             call.respond(
-                HttpStatusCode.OK,
-                searchResult
+                HttpStatusCode.OK, searchResult
             )
         }
     }
@@ -82,7 +74,10 @@ fun Route.getUserProfile(
             }
             call.respond(
                 HttpStatusCode.OK,
-                profileResponse
+                BasicApiResponse(
+                    success = true,
+                    data = profileResponse
+                )
             )
         }
     }
@@ -94,19 +89,15 @@ fun Route.getPostForProfile(
 ) {
     authenticate {
         get("/api/user/post") {
-
+            val userId = call.parameters[QueryParams.PARAM_USER_ID]
             val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
-            val pageSize = call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull()
-                ?: Constant.DEFAULT_POST_PAGE_SIZE
-
+            val pageSize =
+                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constant.DEFAULT_POST_PAGE_SIZE
             val post = postService.getPostForProfile(
-                userId = call.userId,
-                page = page,
-                pageSize = pageSize
+                userId = userId ?: call.userId, page = page, pageSize = pageSize
             )
             call.respond(
-                HttpStatusCode.OK,
-                post
+                HttpStatusCode.OK, post
             )
         }
     }
@@ -120,20 +111,24 @@ fun Route.updateUserProfile(
         put("/api/user/update") {
             val multipart = call.receiveMultipart()
             var updateProfileRequest: UpdateProfileRequest? = null
-            var fileName: String? = null
+            var profilePictureFileName: String? = null
+            var bannerImageFileName: String? = null
             multipart.forEachPart { partData ->
                 when (partData) {
                     is PartData.FormItem -> {
                         if (partData.name == "update_profile_data") {
                             updateProfileRequest = gson.fromJson(
-                                partData.value,
-                                UpdateProfileRequest::class.java
+                                partData.value, UpdateProfileRequest::class.java
                             )
                         }
                     }
 
                     is PartData.FileItem -> {
-                       fileName= partData.save(PROFILE_PICTURE_PATH)
+                        if (partData.name == "profile_picture") {
+                            profilePictureFileName = partData.save(PROFILE_PICTURE_PATH)
+                        } else if (partData.name == "banner_image") {
+                            bannerImageFileName = partData.save(BANNER_IMAGE_PATH)
+                        }
                     }
 
                     is PartData.BinaryItem -> Unit
@@ -141,12 +136,22 @@ fun Route.updateUserProfile(
                 }
             }
 
-            val profilePictureUrl = "${BASE_URL}src/main/$PROFILE_PICTURE_PATH$fileName"
+            val profilePictureUrl = "$BASE_URL$PROFILE_DIR/$profilePictureFileName"
+            val bannerImageUrl = "$BASE_URL$BANNER_DIR/$bannerImageFileName"
 
             updateProfileRequest?.let { request ->
                 val updateAcknowledged = userService.updateUser(
                     userId = call.userId,
-                    profileImageUrl = profilePictureUrl,
+                    bannerImageUrl = if (bannerImageFileName == null)
+                        null
+                    else {
+                        bannerImageUrl
+                    },
+                    profileImageUrl = if (profilePictureFileName == null) {
+                        null
+                    } else {
+                        profilePictureUrl
+                    },
                     updateProfileRequest = request
                 )
                 if (updateAcknowledged) {
@@ -157,7 +162,7 @@ fun Route.updateUserProfile(
                     )
                     return@put
                 } else {
-                    File("$PROFILE_PICTURE_PATH/$fileName").delete()
+                    File("$PROFILE_PICTURE_PATH/$profilePictureFileName").delete()
                     call.respond(HttpStatusCode.InternalServerError)
                     return@put
                 }

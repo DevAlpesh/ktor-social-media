@@ -9,8 +9,7 @@ import com.devalpesh.data.response.UpdateProfileRequest
 import com.devalpesh.data.response.UserResponseItem
 
 class UserService(
-    private val userRepository: UserRepository,
-    private val followRepository: FollowRepository
+    private val userRepository: UserRepository, private val followRepository: FollowRepository
 ) {
 
     suspend fun doesUserWithEmailExists(email: String): Boolean {
@@ -20,6 +19,7 @@ class UserService(
     suspend fun getUserProfile(userId: String, callerUserId: String): ProfileResponse? {
         val user = userRepository.getUserById(userId) ?: return null
         return ProfileResponse(
+            userId = user.id,
             username = user.username,
             bio = user.bio,
             followingCount = user.followingCount,
@@ -27,6 +27,7 @@ class UserService(
             postCount = user.postCount,
             profilePictureUrl = user.profileImageUrl,
             topSkillLinks = user.skills,
+            bannerUrl = user.bannerImageUrl,
             githubUrl = user.githubUrl,
             instagramUrl = user.instagramUrl,
             linkedInUrl = user.linkedInUrl,
@@ -61,6 +62,7 @@ class UserService(
                 username = request.username,
                 password = request.password,
                 profileImageUrl = "",
+                bannerImageUrl = "",
                 bio = "",
                 githubUrl = "",
                 instagramUrl = "",
@@ -75,11 +77,9 @@ class UserService(
     }
 
     suspend fun updateUser(
-        userId: String,
-        profileImageUrl: String,
-        updateProfileRequest: UpdateProfileRequest
-    ) : Boolean {
-      return  userRepository.updateUser(userId, profileImageUrl, updateProfileRequest)
+        userId: String, profileImageUrl: String?, bannerImageUrl: String?, updateProfileRequest: UpdateProfileRequest
+    ): Boolean {
+        return userRepository.updateUser(userId, profileImageUrl, bannerImageUrl, updateProfileRequest)
     }
 
     suspend fun searchForUser(query: String, userId: String): List<UserResponseItem> {
@@ -88,6 +88,7 @@ class UserService(
         return users.map { user: User ->
             val isFollowing = followsByUser.find { it.followedUserId == userId } != null
             UserResponseItem(
+                userId = user.id,
                 username = user.username,
                 profilePictureUrl = user.profileImageUrl,
                 bio = user.bio,

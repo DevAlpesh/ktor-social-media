@@ -8,9 +8,9 @@ fun PartData.FileItem.save(path: String): String {
     val fileByte = this.streamProvider().readBytes()
     val fileExtension = this.originalFileName?.takeLastWhile { it != '.' }
     val fileName = UUID.randomUUID().toString() + "." + fileExtension
-    val folder = File("src/main/${path}")
+    val folder = File(path)
     folder.mkdir()
-    File("src/main/${path}$fileName").writeBytes(fileByte)
+    File("$path$fileName").writeBytes(fileByte)
     return fileName
 }
 

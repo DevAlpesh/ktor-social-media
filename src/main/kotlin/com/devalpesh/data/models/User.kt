@@ -8,6 +8,7 @@ data class User(
     val username: String,
     val password: String,
     val profileImageUrl: String,
+    val bannerImageUrl: String,
     val bio: String,
     val githubUrl: String?,
     val instagramUrl: String?,

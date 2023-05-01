@@ -61,7 +61,7 @@ fun Application.configureRouting() {
         getActivities(activityService)
 
         static {
-            resource( "static")
+            resources( "static")
         }
 
     }

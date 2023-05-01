@@ -25,7 +25,8 @@ class UserRepositoryImpl(
 
     override suspend fun updateUser(
         userId: String,
-        profileImageUrl: String,
+        profileImageUrl: String?,
+        bannerImageUrl: String?,
         updateProfileRequest: UpdateProfileRequest
     ): Boolean {
         val user = getUserById(userId) ?: return false
@@ -35,7 +36,8 @@ class UserRepositoryImpl(
                 email = user.email,
                 username = updateProfileRequest.username,
                 password = user.password,
-                profileImageUrl = profileImageUrl,
+                profileImageUrl = profileImageUrl ?: user.profileImageUrl,
+                bannerImageUrl = bannerImageUrl ?: user.bannerImageUrl,
                 bio = updateProfileRequest.bio,
                 githubUrl = updateProfileRequest.githubUrl,
                 instagramUrl = updateProfileRequest.instagramUrl,
@@ -44,7 +46,7 @@ class UserRepositoryImpl(
                 followerCount = user.followerCount,
                 postCount = user.postCount,
                 followingCount = user.followingCount,
-                id = user.id
+                id = user.id,
             )
         ).wasAcknowledged()
     }

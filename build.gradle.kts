@@ -8,6 +8,7 @@ plugins {
     application
     kotlin("jvm") version "1.8.0"
     id("io.ktor.plugin") version "2.1.1"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.devalpesh"
@@ -53,7 +54,6 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
-
     // Test dependencies
     // Gson
     testImplementation("com.google.code.gson:gson:2.10")
@@ -66,4 +66,8 @@ dependencies {
     // Truth
     testImplementation("com.google.truth:truth:1.1.3")
 
+}
+
+tasks.create("stage") {
+    dependsOn("installDist")
 }

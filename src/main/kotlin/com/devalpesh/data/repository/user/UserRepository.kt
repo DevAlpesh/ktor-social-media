@@ -1,7 +1,7 @@
 package com.devalpesh.data.repository.user
 
 import com.devalpesh.data.models.User
-import com.devalpesh.data.response.UpdateProfileRequest
+import com.devalpesh.data.request.UpdateProfileRequest
 
 interface UserRepository {
     suspend fun createUser(user: User)

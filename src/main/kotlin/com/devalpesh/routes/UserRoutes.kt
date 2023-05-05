@@ -2,7 +2,7 @@ package com.devalpesh.routes
 
 import com.devalpesh.data.response.ApiResponseMessages
 import com.devalpesh.data.response.BasicApiResponse
-import com.devalpesh.data.response.UpdateProfileRequest
+import com.devalpesh.data.request.UpdateProfileRequest
 import com.devalpesh.data.response.UserResponseItem
 import com.devalpesh.service.PostService
 import com.devalpesh.service.UserService

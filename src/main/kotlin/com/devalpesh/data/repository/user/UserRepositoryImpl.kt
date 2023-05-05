@@ -1,7 +1,7 @@
 package com.devalpesh.data.repository.user
 
 import com.devalpesh.data.models.User
-import com.devalpesh.data.response.UpdateProfileRequest
+import com.devalpesh.data.request.UpdateProfileRequest
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineDatabase
 
@@ -42,7 +42,7 @@ class UserRepositoryImpl(
                 githubUrl = updateProfileRequest.githubUrl,
                 instagramUrl = updateProfileRequest.instagramUrl,
                 linkedInUrl = updateProfileRequest.linkedInUrl,
-                skills = updateProfileRequest.skill,
+                topSkills = updateProfileRequest.skills,
                 followerCount = user.followerCount,
                 postCount = user.postCount,
                 followingCount = user.followingCount,

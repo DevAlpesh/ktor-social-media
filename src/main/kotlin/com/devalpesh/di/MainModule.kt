@@ -10,6 +10,8 @@ import com.devalpesh.data.repository.likes.LikesRepository
 import com.devalpesh.data.repository.likes.LikesRepositoryImpl
 import com.devalpesh.data.repository.post.PostRepository
 import com.devalpesh.data.repository.post.PostRepositoryImpl
+import com.devalpesh.data.repository.skill.SkillRepository
+import com.devalpesh.data.repository.skill.SkillRepositoryImpl
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.repository.user.UserRepositoryImpl
 import com.devalpesh.service.*
@@ -48,6 +50,9 @@ val mainModule = module {
     single<ActivityRepository> {
         ActivityRepositoryImpl(get())
     }
+    single<SkillRepository> {
+        SkillRepositoryImpl(get())
+    }
 
     single { FollowService(get()) }
     single { UserService(get(), get()) }
@@ -55,6 +60,8 @@ val mainModule = module {
     single { LikeService(get(), get(), get()) }
     single { CommentService(get()) }
     single { ActivityService(get(), get(), get()) }
+    single { SkillService(get()) }
+
     single { Gson() }
 }
 

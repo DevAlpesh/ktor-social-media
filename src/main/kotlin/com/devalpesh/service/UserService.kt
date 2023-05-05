@@ -5,7 +5,7 @@ import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.repository.user.UserRepository
 import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.response.ProfileResponse
-import com.devalpesh.data.response.UpdateProfileRequest
+import com.devalpesh.data.request.UpdateProfileRequest
 import com.devalpesh.data.response.UserResponseItem
 
 class UserService(
@@ -26,7 +26,7 @@ class UserService(
             followerCount = user.followerCount,
             postCount = user.postCount,
             profilePictureUrl = user.profileImageUrl,
-            topSkillLinks = user.skills,
+            topSkills = user.topSkills,
             bannerUrl = user.bannerImageUrl,
             githubUrl = user.githubUrl,
             instagramUrl = user.instagramUrl,

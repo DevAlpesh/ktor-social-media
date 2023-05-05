@@ -6,6 +6,6 @@ import org.bson.types.ObjectId
 data class Skill(
     @BsonId
     val id: String = ObjectId().toString(),
-    val skill: String,
-    val iconUrl: String
+    val name: String,
+    val imageUrl: String
 )

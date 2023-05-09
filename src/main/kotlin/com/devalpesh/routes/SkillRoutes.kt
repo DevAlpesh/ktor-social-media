@@ -1,13 +1,11 @@
 package com.devalpesh.routes
 
-import com.devalpesh.routes.authenticate
 import com.devalpesh.service.SkillService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.net.http.HttpResponse
 
 fun Route.getSkills(
     skillService: SkillService
@@ -16,7 +14,7 @@ fun Route.getSkills(
         get("api/skills/get") {
             call.respond(
                 HttpStatusCode.OK,
-                skillService.getSkills()
+                skillService.getSkills().map { it.toSkillDto() }
             )
         }
     }

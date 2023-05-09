@@ -103,7 +103,10 @@ fun Route.loginUser(
                 HttpStatusCode.OK,
                 BasicApiResponse(
                     success = true,
-                    data = AuthResponse(token = token)
+                    data = AuthResponse(
+                        userId = user.id,
+                        token = token
+                    )
                 )
             )
         } else {

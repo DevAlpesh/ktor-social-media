@@ -6,6 +6,7 @@ import com.devalpesh.data.response.BasicApiResponse
 import com.devalpesh.service.CommentService
 import com.devalpesh.service.LikeService
 import com.devalpesh.service.PostService
+import com.devalpesh.util.Constant
 import com.devalpesh.util.Constant.BASE_URL
 import com.devalpesh.util.Constant.DEFAULT_POST_PAGE_SIZE
 import com.devalpesh.util.Constant.POST_DIR
@@ -75,6 +76,25 @@ fun Route.createPost(
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
             }
+        }
+    }
+}
+
+fun Route.getPostForProfile(
+    postService: PostService
+) {
+    authenticate {
+        get("/api/user/post") {
+            val userId = call.parameters[QueryParams.PARAM_USER_ID]
+            val page = call.parameters[QueryParams.PARAM_PAGE]?.toIntOrNull() ?: 0
+            val pageSize =
+                call.parameters[QueryParams.PARAM_PAGE_SIZE]?.toIntOrNull() ?: Constant.DEFAULT_POST_PAGE_SIZE
+            val post = postService.getPostForProfile(
+                userId = userId ?: call.userId, page = page, pageSize = pageSize
+            )
+            call.respond(
+                HttpStatusCode.OK, post
+            )
         }
     }
 }

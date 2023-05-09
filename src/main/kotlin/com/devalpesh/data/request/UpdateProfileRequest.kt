@@ -1,6 +1,6 @@
 package com.devalpesh.data.request
 
-import com.devalpesh.data.models.Skill
+import com.devalpesh.data.response.SkillDto
 
 data class UpdateProfileRequest(
     val username: String,
@@ -8,5 +8,5 @@ data class UpdateProfileRequest(
     val githubUrl: String,
     val instagramUrl: String,
     val linkedInUrl: String,
-    val skills: List<Skill>
+    val skills: List<SkillDto>
 )

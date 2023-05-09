@@ -1,5 +1,6 @@
 package com.devalpesh.di
 
+import com.devalpesh.data.models.Skill
 import com.devalpesh.data.repository.activity.ActivityRepository
 import com.devalpesh.data.repository.activity.ActivityRepositoryImpl
 import com.devalpesh.data.repository.comment.CommentRepository
@@ -17,6 +18,8 @@ import com.devalpesh.data.repository.user.UserRepositoryImpl
 import com.devalpesh.service.*
 import com.devalpesh.util.Constant
 import com.google.gson.Gson
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo

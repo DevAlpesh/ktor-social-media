@@ -7,6 +7,7 @@ import com.devalpesh.data.response.BasicApiResponse
 import com.devalpesh.data.util.ActivityType
 import com.devalpesh.service.ActivityService
 import com.devalpesh.service.FollowService
+import com.devalpesh.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -25,13 +26,13 @@ fun Route.followRoute(
                 return@post
             }
 
-            if (followService.followUserIfExists(request,call.userId)) {
+            if (followService.followUserIfExists(request, call.userId)) {
                 activityService.createActivity(
                     Activity(
                         timestamp = System.currentTimeMillis(),
                         byUserId = call.userId,
                         toUserId = request.followedUserId,
-                        type =  ActivityType.FollowedUser.type,
+                        type = ActivityType.FollowedUser.type,
                         parentId = ""
                     )
                 )
@@ -56,11 +57,11 @@ fun Route.followRoute(
 fun Route.unfollowUser(followService: FollowService) {
     authenticate {
         delete("/api/following/unfollow") {
-            val request = call.receiveNullable<FollowUpdateRequest>() ?: kotlin.run {
+            val userId = call.parameters[QueryParams.PARAM_USER_ID] ?: kotlin.run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@delete
             }
-            if (followService.unFollowUserIfExists(request,call.userId)) {
+            if (followService.unFollowUserIfExists(userId, call.userId)) {
                 call.respond(
                     HttpStatusCode.OK,
                     BasicApiResponse<Unit>(success = true)

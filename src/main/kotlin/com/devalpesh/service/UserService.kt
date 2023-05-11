@@ -86,7 +86,7 @@ class UserService(
         val users = userRepository.searchForUser(query)
         val followsByUser = followRepository.getFollowsByUser(userId)
         return users.map { user: User ->
-            val isFollowing = followsByUser.find { it.followedUserId == userId } != null
+            val isFollowing = followsByUser.find { it.followedUserId == user.id } != null
             UserResponseItem(
                 userId = user.id,
                 username = user.username,
@@ -94,7 +94,7 @@ class UserService(
                 bio = user.bio,
                 isFollowing = isFollowing
             )
-        }
+        }.filter { it.userId != userId }
     }
 }
 

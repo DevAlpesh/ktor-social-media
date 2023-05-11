@@ -1,6 +1,7 @@
 package com.devalpesh.data.repository.activity
 
 import com.devalpesh.data.models.Activity
+import com.devalpesh.data.response.ActivityResponse
 import com.devalpesh.util.Constant
 
 interface ActivityRepository {
@@ -9,7 +10,7 @@ interface ActivityRepository {
         userId: String,
         page: Int = 0,
         pageSize: Int = Constant.DEFAULT_ACTIVITY_PAGE_SIZE
-    ): List<Activity>
+    ): List<ActivityResponse>
 
 
     suspend fun createActivity(activity: Activity)

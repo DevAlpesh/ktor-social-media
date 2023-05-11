@@ -29,7 +29,7 @@ class FollowRepositoryImpl(
     }
 
     override suspend fun getFollowsByUser(userId : String): List<Following> {
-        return following.find(Following::followedUserId eq userId).toList()
+        return following.find(Following::followingUserId eq userId).toList()
     }
 
     override suspend fun unfollowedUserIfExists(followingUserId: String, followedUserId: String): Boolean {

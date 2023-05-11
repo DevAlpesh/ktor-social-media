@@ -4,6 +4,7 @@ import com.devalpesh.data.models.Activity
 import com.devalpesh.data.repository.activity.ActivityRepository
 import com.devalpesh.data.repository.comment.CommentRepository
 import com.devalpesh.data.repository.post.PostRepository
+import com.devalpesh.data.response.ActivityResponse
 import com.devalpesh.data.util.ActivityType
 import com.devalpesh.util.Constant
 import com.devalpesh.data.util.ParentType
@@ -17,7 +18,7 @@ class ActivityService(
         userId: String,
         page: Int,
         pageSize: Int = Constant.DEFAULT_ACTIVITY_PAGE_SIZE
-    ): List<Activity> {
+    ): List<ActivityResponse> {
         return activityRepository.getActivitiesForUser(userId, page, pageSize)
     }
 

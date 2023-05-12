@@ -1,6 +1,7 @@
 package com.devalpesh.service
 
 import com.devalpesh.data.models.User
+import com.devalpesh.data.repository.comment.CommentRepository
 import com.devalpesh.data.repository.follow.FollowRepository
 import com.devalpesh.data.repository.likes.LikesRepository
 import com.devalpesh.data.repository.user.UserRepository
@@ -16,8 +17,8 @@ class LikeService(
         return likeRepository.likeParent(userId, parentId, parentType)
     }
 
-    suspend fun unlikeParent(userId: String, parentId: String): Boolean {
-        return likeRepository.unlikeParent(userId, parentId)
+    suspend fun unlikeParent(userId: String, parentId: String, parentType: Int): Boolean {
+        return likeRepository.unlikeParent(userId, parentId, parentType)
     }
 
     suspend fun deleteLikesForParent(parentId: String) {

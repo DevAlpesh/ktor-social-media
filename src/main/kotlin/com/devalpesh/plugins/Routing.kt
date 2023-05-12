@@ -47,6 +47,7 @@ fun Application.configureRouting() {
         createPost(postService)
         getPostForFollows(postService)
         deletePost(postService, likeService, commentService)
+        getPostDetails(postService)
 
         // like routes
         likeParent(likeService, activityService)
@@ -65,7 +66,7 @@ fun Application.configureRouting() {
         getSkills(skillService)
 
         static {
-            resources( "static")
+            resources("static")
         }
 
     }

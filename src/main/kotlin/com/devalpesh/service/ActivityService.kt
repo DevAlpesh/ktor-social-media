@@ -27,7 +27,7 @@ class ActivityService(
         parentType: ParentType,
         parentId: String
     ): Boolean {
-        val toUserId = when (parentType) {
+        val toUserIdPost = when (parentType) {
             is ParentType.Post -> {
                 postRepository.getPost(parentId)?.userId
             }
@@ -38,14 +38,14 @@ class ActivityService(
 
             is ParentType.None -> return false
         } ?: return false
-        if (byUserId==toUserId){
+        if (byUserId==toUserIdPost){
             return false
         }
         activityRepository.createActivity(
             Activity(
                 timestamp = System.currentTimeMillis(),
                 byUserId = byUserId,
-                toUserId = toUserId,
+                toUserId = toUserIdPost,
                 type = when (parentType) {
                     is ParentType.Post -> ActivityType.LikedPost.type
                     is ParentType.Comment -> ActivityType.LikedComment.type

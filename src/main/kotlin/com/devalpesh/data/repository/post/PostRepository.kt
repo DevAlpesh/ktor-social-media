@@ -1,6 +1,7 @@
 package com.devalpesh.data.repository.post
 
 import com.devalpesh.data.models.Post
+import com.devalpesh.data.response.PostResponse
 import com.devalpesh.util.Constant
 
 interface PostRepository {
@@ -22,5 +23,7 @@ interface PostRepository {
     ): List<Post>
 
     suspend fun getPost(postId: String): Post?
+
+    suspend fun getPostDetails(userId: String, postId: String): PostResponse?
 
 }

@@ -3,6 +3,7 @@ package com.devalpesh.service
 import com.devalpesh.data.models.Post
 import com.devalpesh.data.repository.post.PostRepository
 import com.devalpesh.data.request.CreatePostRequest
+import com.devalpesh.data.response.PostResponse
 import com.devalpesh.util.Constant
 
 class PostService(
@@ -46,6 +47,10 @@ class PostService(
 
     suspend fun getPost(postId: String): Post? {
         return repository.getPost(postId)
+    }
+
+    suspend fun getPostDetails(ownUserId: String, postId: String): PostResponse? {
+        return repository.getPostDetails(ownUserId, postId)
     }
 
     suspend fun deletePost(postId: String) {

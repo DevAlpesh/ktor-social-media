@@ -11,7 +11,6 @@ import com.devalpesh.util.Constant.BASE_URL
 import com.devalpesh.util.Constant.DEFAULT_POST_PAGE_SIZE
 import com.devalpesh.util.Constant.POST_DIR
 import com.devalpesh.util.Constant.POST_PICTURE_PATH
-import com.devalpesh.util.Constant.PROFILE_DIR
 import com.devalpesh.util.QueryParams
 import com.devalpesh.util.save
 import com.google.gson.Gson
@@ -164,7 +163,7 @@ fun Route.getPostDetails(
                 call.respond(HttpStatusCode.BadRequest)
                 return@get
             }
-            val post = postService.getPost(postId)
+            val post = postService.getPostDetails(call.userId, postId)
             if (post == null) {
                 call.respond(
                     HttpStatusCode.NotFound,

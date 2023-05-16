@@ -27,7 +27,16 @@ import org.litote.kmongo.reactivestreams.KMongo
 val mainModule = module {
     single {
         val client = KMongo.createClient().coroutine
-        client.getDatabase(Constant.DATABASE_NAME)
+        client.getDatabase(Constant.DATABASE_NAME)/*.also {
+            val skill = it.getCollection<Skill>()
+            GlobalScope.launch {
+                skill.insertOne(Skill(name = "Adobe XD", imageUrl = "http://10.0.2.2:8001/skills/adobe-logo.svg"))
+                skill.insertOne(Skill(name = "Android", imageUrl = "http://10.0.2.2:8001/skills/android-logo.svg"))
+                skill.insertOne(Skill(name = "C#", imageUrl = "http://10.0.2.2:8001/skills/csharp-logo.svg"))
+                skill.insertOne(Skill(name = "JavaScript", imageUrl = "http://10.0.2.2:8001/skills/java-script-logo.svg"))
+                skill.insertOne(Skill(name = "MongoDB", imageUrl = "http://10.0.2.2:8001/skills/mongodb-logo.svg"))
+            }
+        }*/
     }
 
     single<UserRepository> {

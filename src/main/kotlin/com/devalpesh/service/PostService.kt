@@ -34,11 +34,13 @@ class PostService(
     }
 
     suspend fun getPostForProfile(
+        ownUserId: String,
         userId: String,
         page: Int = 0,
         pageSize: Int = Constant.DEFAULT_POST_PAGE_SIZE
-    ): List<Post> {
+    ): List<PostResponse> {
         return repository.getPostForProfile(
+            ownUserId = ownUserId,
             userId = userId,
             page = page,
             pageSize = pageSize

@@ -22,12 +22,12 @@ class PostService(
     }
 
     suspend fun getPostForFollows(
-        userId: String,
+        ownUserId: String,
         page: Int = 0,
         pageSize: Int = Constant.DEFAULT_POST_PAGE_SIZE
-    ): List<Post> {
+    ): List<PostResponse> {
         return repository.getPostByFollows(
-            userId = userId,
+            ownUserId = ownUserId,
             page = page,
             pageSize = pageSize
         )

@@ -7,6 +7,7 @@ import com.devalpesh.data.request.CreateAccountRequest
 import com.devalpesh.data.response.ProfileResponse
 import com.devalpesh.data.request.UpdateProfileRequest
 import com.devalpesh.data.response.UserResponseItem
+import com.devalpesh.util.Constant
 
 class UserService(
     private val userRepository: UserRepository, private val followRepository: FollowRepository
@@ -61,8 +62,8 @@ class UserService(
                 email = request.email,
                 username = request.username,
                 password = request.password,
-                profileImageUrl = "",
-                bannerImageUrl = "",
+                profileImageUrl = Constant.DEFAULT_PROFILE_PICTURE_PATH,
+                bannerImageUrl = Constant.DEFAULT_BANNER_IMAGE_PATH,
                 bio = "",
                 githubUrl = "",
                 instagramUrl = "",
